@@ -102,9 +102,9 @@ export async function setup() {
     "click",
     async e => {
       const model = linearRegressionModel();
-      await run(model, "linear", true, 100);
+      await run(model, "linear", true, 200);
       await model.save("localstorage://simpleNN-lr-model");
-      downloadLocalstorage();
+      //downloadLocalstorage();
     },
     false
   );
@@ -113,9 +113,9 @@ export async function setup() {
     "click",
     async () => {
       const model = multiLayerPerceptronRegressionModel1Hidden();
-      await run(model, "oneHidden", false, 200);
+      await run(model, "oneHidden", false, 300);
       await model.save("localstorage://1hiddenNN-lr-model");
-      downloadLocalstorage();
+      //downloadLocalstorage();
     },
     false
   );
