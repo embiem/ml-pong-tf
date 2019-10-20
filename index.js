@@ -19,11 +19,10 @@ import * as tf from '@tensorflow/tfjs';
 import * as tfvis from '@tensorflow/tfjs-vis';
 
 import {BostonHousingDataset, featureDescriptions} from './data';
-import * as normalization from './normalization';
 import * as ui from './ui';
 
 // Some hyperparameters for model training.
-const NUM_EPOCHS = 50;
+const NUM_EPOCHS = 200;
 const BATCH_SIZE = 20;
 const LEARNING_RATE = 0.01;
 
@@ -33,19 +32,10 @@ const tensors = {};
 // Convert loaded data into tensors and creates normalized versions of the
 // features.
 export function arraysToTensors() {
-  tensors.rawTrainFeatures = tf.tensor2d(bostonData.trainFeatures);
+  tensors.trainFeatures = tf.tensor2d(bostonData.trainFeatures);
   tensors.trainTarget = tf.tensor2d(bostonData.trainTarget);
-  tensors.rawTestFeatures = tf.tensor2d(bostonData.testFeatures);
+  tensors.testFeatures = tf.tensor2d(bostonData.testFeatures);
   tensors.testTarget = tf.tensor2d(bostonData.testTarget);
-
-  // Normalize mean and standard deviation of data.
-  let {dataMean, dataStd} =
-      normalization.determineMeanAndStddev(tensors.rawTrainFeatures);
-
-  tensors.trainFeatures = normalization.normalizeTensor(
-      tensors.rawTrainFeatures, dataMean, dataStd);
-  tensors.testFeatures =
-      normalization.normalizeTensor(tensors.rawTestFeatures, dataMean, dataStd);
 };
 
 /**
@@ -130,7 +120,7 @@ export function describeKernelElements(kernel) {
  * @param {boolean} weightsIllustration Whether to print info about the learned
  *  weights.
  */
-export async function run(model, modelName, weightsIllustration) {
+export async function run(model, modelName, weightsIllustration, nEpochs = NUM_EPOCHS) {
   model.compile(
       {optimizer: tf.train.sgd(LEARNING_RATE), loss: 'meanSquaredError'});
 
@@ -140,12 +130,12 @@ export async function run(model, modelName, weightsIllustration) {
   ui.updateStatus('Starting training process...');
   await model.fit(tensors.trainFeatures, tensors.trainTarget, {
     batchSize: BATCH_SIZE,
-    epochs: NUM_EPOCHS,
+    epochs: nEpochs,
     validationSplit: 0.2,
     callbacks: {
       onEpochEnd: async (epoch, logs) => {
         await ui.updateModelStatus(
-            `Epoch ${epoch + 1} of ${NUM_EPOCHS} completed.`, modelName);
+            `Epoch ${epoch + 1} of ${nEpochs} completed.`, modelName);
         trainLogs.push(logs);
         tfvis.show.history(container, trainLogs, ['loss', 'val_loss'])
 

@@ -19,10 +19,6 @@ const Papa = require("papaparse");
 import { arraysToTensors, computeBaseline } from ".";
 import * as ui from "./ui";
 
-// Boston Housing data constants:
-const BASE_URL =
-  "https://storage.googleapis.com/tfjs-examples/multivariate-linear-regression/data/";
-
 const TRAIN_FEATURES_FN = "train-features.csv";
 const TRAIN_TARGET_FN = "train-target.csv";
 const TEST_FEATURES_FN = "test-features.csv";
