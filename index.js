@@ -170,10 +170,10 @@ export async function run(
 }
 
 export function computeBaseline() {
-  const avgPrice = tensors.trainTarget.mean();
-  console.log(`Average price: ${avgPrice.dataSync()}`);
+  const avgPlayerYs = tensors.trainTarget.mean();
+  console.log(`Average Y-Positions: ${avgPlayerYs.dataSync()}`);
   const baseline = tensors.testTarget
-    .sub(avgPrice)
+    .sub(avgPlayerYs)
     .square()
     .mean();
   console.log(`Baseline loss: ${baseline.dataSync()}`);
